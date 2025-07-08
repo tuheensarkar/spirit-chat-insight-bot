@@ -2,7 +2,11 @@
 import React from 'react';
 import { Flower, Heart, Star, Sun } from 'lucide-react';
 
-export const WelcomeCard: React.FC = () => {
+interface WelcomeCardProps {
+  onSuggestionClick: (suggestion: string) => void;
+}
+
+export const WelcomeCard: React.FC<WelcomeCardProps> = ({ onSuggestionClick }) => {
   const suggestions = [
     "How can I find inner peace?",
     "What is my life's purpose?",
@@ -32,12 +36,13 @@ export const WelcomeCard: React.FC = () => {
         <p className="text-sm font-medium text-gray-700 mb-3">Try asking me about:</p>
         <div className="grid grid-cols-1 gap-2 max-w-md mx-auto">
           {suggestions.map((suggestion, index) => (
-            <div
+            <button
               key={index}
-              className="px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-100 rounded-lg text-sm text-gray-700 hover:from-purple-100 hover:to-pink-100 transition-colors cursor-pointer"
+              onClick={() => onSuggestionClick(suggestion)}
+              className="px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-100 rounded-lg text-sm text-gray-700 hover:from-purple-100 hover:to-pink-100 transition-colors cursor-pointer text-left"
             >
               {suggestion}
-            </div>
+            </button>
           ))}
         </div>
       </div>
