@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Lotus, Heart, Star, Sun } from 'lucide-react';
+import { Flower, Heart, Star, Sun } from 'lucide-react';
 
 export const WelcomeCard: React.FC = () => {
   const suggestions = [
@@ -14,7 +14,7 @@ export const WelcomeCard: React.FC = () => {
     <div className="text-center py-8 animate-in fade-in duration-500">
       <div className="mb-6">
         <div className="flex items-center justify-center gap-4 mb-4">
-          <Lotus className="w-12 h-12 text-purple-500" />
+          <Flower className="w-12 h-12 text-purple-500" />
           <Heart className="w-10 h-10 text-pink-500" />
           <Star className="w-8 h-8 text-yellow-500" />
           <Sun className="w-10 h-10 text-orange-500" />
