@@ -5,6 +5,7 @@ A Bible-based spiritual assistant powered by AI — delivering deep, meaningful 
 🌐 Live Demo: spirit-chat-insight-bot.vercel.app
 
 📖 **Features**
+
     🔎 Bible-Powered Responses — Uses FAISS + Sentence Transformers for fast and accurate verse retrieval.
 
     🧠 Groq LLM Integration  — Real-time insights using Mixtral via Groq API.
