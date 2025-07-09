@@ -1,8 +1,8 @@
 
-import { SpiritualChatbot } from "@/components/SpiritualChatbot";
+import { DSCPLApp } from "@/components/DSCPLApp";
 
 const Index = () => {
-  return <SpiritualChatbot />;
+  return <DSCPLApp />;
 };
 
 export default Index;

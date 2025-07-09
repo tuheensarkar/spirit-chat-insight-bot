@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Heart, Flower } from 'lucide-react';
+import { Send, Sparkles, Heart, Flower, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,12 +17,16 @@ interface Message {
   timestamp: Date;
 }
 
+interface SpiritualChatbotProps {
+  onBack?: () => void;
+}
+
 const groq = new Groq({
   apiKey: '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',
   dangerouslyAllowBrowser: true
 });
 
-export const SpiritualChatbot = () => {
+export const SpiritualChatbot: React.FC<SpiritualChatbotProps> = ({ onBack }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -44,7 +48,7 @@ export const SpiritualChatbot = () => {
         messages: [
           {
             role: "system",
-            content: `You are a compassionate spiritual guide and counselor. Your role is to provide wisdom, comfort, and guidance to those seeking spiritual growth and inner peace. 
+            content: `You are DSCPL, a compassionate spiritual guide and counselor AI assistant. Your role is to provide wisdom, comfort, and guidance to those seeking spiritual growth and inner peace. 
 
 Key guidelines for your responses:
 - Always respond with empathy, warmth, and understanding
@@ -126,11 +130,20 @@ Remember: You are here to support, not to judge. Every person's spiritual journe
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 p-4">
       <div className="max-w-4xl mx-auto">
+        {onBack && (
+          <div className="mb-6">
+            <Button variant="ghost" onClick={onBack} className="mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to DSCPL
+            </Button>
+          </div>
+        )}
+        
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Flower className="w-8 h-8 text-purple-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Spiritual Guide
+              DSCPL Chat
             </h1>
             <Sparkles className="w-8 h-8 text-pink-600" />
           </div>
