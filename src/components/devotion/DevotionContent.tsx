@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Heart, Sparkles, Play, Calendar, CheckCircle } from 'lucide-react';
+import { VideoPlayer } from './VideoPlayer';
+import { QuoteImageGenerator } from './QuoteImageGenerator';
 
 interface DevotionContentProps {
   topic: string;
@@ -19,7 +21,8 @@ export const DevotionContent: React.FC<DevotionContentProps> = ({ topic }) => {
     },
     prayer: "Lord, help me release my anxieties and trust in You. Give me Your peace that surpasses all understanding.",
     declaration: "God is my refuge, and I will not be shaken. His peace guards my heart and mind.",
-    videoTitle: "Overcoming Fear with God's Promises"
+    videoTitle: "Overcoming Fear with God's Promises",
+    videoUrl: "https://www.youtube.com/embed/JGigs6CPR_o"
   };
 
   const steps = [
@@ -42,30 +45,37 @@ export const DevotionContent: React.FC<DevotionContentProps> = ({ topic }) => {
     switch (currentStep) {
       case 0:
         return (
-          <Card className="bg-blue-50 border-blue-200">
-            <CardHeader>
-              <CardTitle className="flex items-center text-blue-800">
-                <BookOpen className="w-5 h-5 mr-2" />
-                Scripture Reading - {devotionContent.scripture.verse}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-blue-700 text-lg leading-relaxed mb-6 italic">
-                "{devotionContent.scripture.text}"
-              </p>
-              <div className="bg-white p-4 rounded-lg mb-4">
-                <h4 className="font-semibold text-blue-800 mb-2">Reflection Questions:</h4>
-                <ul className="text-blue-700 space-y-1">
-                  <li>• What is God saying to me through this verse?</li>
-                  <li>• How can I apply this truth to my current situation?</li>
-                  <li>• What anxieties can I surrender to God today?</li>
-                </ul>
-              </div>
-              <Button onClick={() => handleStepComplete(0)} className="w-full bg-blue-600 hover:bg-blue-700">
-                Complete Reading
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <Card className="bg-blue-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="flex items-center text-blue-800">
+                  <BookOpen className="w-5 h-5 mr-2" />
+                  Scripture Reading - {devotionContent.scripture.verse}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-blue-700 text-lg leading-relaxed mb-6 italic">
+                  "{devotionContent.scripture.text}"
+                </p>
+                <div className="bg-white p-4 rounded-lg mb-4">
+                  <h4 className="font-semibold text-blue-800 mb-2">Reflection Questions:</h4>
+                  <ul className="text-blue-700 space-y-1">
+                    <li>• What is God saying to me through this verse?</li>
+                    <li>• How can I apply this truth to my current situation?</li>
+                    <li>• What anxieties can I surrender to God today?</li>
+                  </ul>
+                </div>
+                <Button onClick={() => handleStepComplete(0)} className="w-full bg-blue-600 hover:bg-blue-700">
+                  Complete Reading
+                </Button>
+              </CardContent>
+            </Card>
+            
+            <QuoteImageGenerator 
+              quote={devotionContent.scripture.text}
+              verse={devotionContent.scripture.verse}
+            />
+          </div>
         );
       case 1:
         return (
@@ -136,19 +146,19 @@ export const DevotionContent: React.FC<DevotionContentProps> = ({ topic }) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="bg-white p-4 rounded-lg mb-4">
-                <h4 className="font-semibold text-green-800 mb-2">{devotionContent.videoTitle}</h4>
-                <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4">
-                  <div className="text-center">
-                    <Play className="w-16 h-16 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-500">Video content would be loaded here</p>
-                  </div>
+              <div className="space-y-4">
+                <VideoPlayer 
+                  title={devotionContent.videoTitle}
+                  videoUrl={devotionContent.videoUrl}
+                />
+                <div className="bg-white p-4 rounded-lg">
+                  <h4 className="font-semibold text-green-800 mb-2">{devotionContent.videoTitle}</h4>
+                  <p className="text-green-700 text-sm">
+                    This video provides additional encouragement and practical insights related to your chosen topic.
+                  </p>
                 </div>
-                <p className="text-green-700 text-sm">
-                  This video provides additional encouragement and practical insights related to your chosen topic.
-                </p>
               </div>
-              <Button onClick={() => handleStepComplete(3)} className="w-full bg-green-600 hover:bg-green-700">
+              <Button onClick={() => handleStepComplete(3)} className="w-full bg-green-600 hover:bg-green-700 mt-4">
                 Complete Devotion
               </Button>
             </CardContent>
