@@ -24,13 +24,7 @@ export const NotificationManager = () => {
                   icon: '/favicon.ico',
                   badge: '/favicon.ico',
                   tag: key,
-                  requireInteraction: true,
-                  actions: [
-                    {
-                      action: 'open',
-                      title: 'Open DSCPL'
-                    }
-                  ]
+                  requireInteraction: true
                 });
               }
               

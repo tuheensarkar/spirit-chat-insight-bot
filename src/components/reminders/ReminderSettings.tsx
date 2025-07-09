@@ -8,6 +8,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar, Clock, Bell } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+// Declare global gapi types
+declare global {
+  interface Window {
+    gapi: {
+      load: (api: string, callback: () => void) => void;
+      client: {
+        init: (config: any) => Promise<void>;
+        calendar: {
+          events: {
+            insert: (params: any) => Promise<any>;
+          };
+        };
+      };
+      auth2: {
+        getAuthInstance: () => {
+          isSignedIn: {
+            get: () => boolean;
+          };
+          signIn: () => Promise<void>;
+        };
+      };
+    };
+  }
+}
+
 interface ReminderSettingsProps {
   onScheduleComplete: () => void;
   programType: string;
@@ -62,59 +87,61 @@ export const ReminderSettings: React.FC<ReminderSettingsProps> = ({
     try {
       // Initialize Google Calendar API
       if (typeof window !== 'undefined' && window.gapi) {
-        await window.gapi.load('client:auth2', async () => {
-          await window.gapi.client.init({
-            clientId: '56351045591-8fhtsugc1gt9s4q5cmcp57hste7ma49d.apps.googleusercontent.com',
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-            scope: 'https://www.googleapis.com/auth/calendar.events'
+        await new Promise<void>((resolve) => {
+          window.gapi.load('client:auth2', resolve);
+        });
+
+        await window.gapi.client.init({
+          clientId: '56351045591-8fhtsugc1gt9s4q5cmcp57hste7ma49d.apps.googleusercontent.com',
+          discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+          scope: 'https://www.googleapis.com/auth/calendar.events'
+        });
+
+        const authInstance = window.gapi.auth2.getAuthInstance();
+        if (!authInstance.isSignedIn.get()) {
+          await authInstance.signIn();
+        }
+
+        // Create calendar events for each day
+        const days = parseInt(programDuration);
+        for (let i = 1; i <= days; i++) {
+          const eventDate = new Date();
+          eventDate.setDate(eventDate.getDate() + i);
+          const [hours, minutes] = reminderTime.split(':');
+          eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+          
+          const endDate = new Date(eventDate);
+          endDate.setMinutes(endDate.getMinutes() + 30); // 30-minute duration
+
+          const event = {
+            summary: `DSCPL Daily ${programType} - ${topic}`,
+            description: `Your daily spiritual ${programType} session focusing on ${topic}. Take 15-30 minutes to connect with God.`,
+            start: {
+              dateTime: eventDate.toISOString(),
+              timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            },
+            end: {
+              dateTime: endDate.toISOString(),
+              timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            },
+            reminders: {
+              useDefault: false,
+              overrides: [
+                { method: 'popup', minutes: 10 },
+                { method: 'email', minutes: 60 }
+              ]
+            }
+          };
+
+          await window.gapi.client.calendar.events.insert({
+            calendarId: 'primary',
+            resource: event
           });
+        }
 
-          const authInstance = window.gapi.auth2.getAuthInstance();
-          if (!authInstance.isSignedIn.get()) {
-            await authInstance.signIn();
-          }
-
-          // Create calendar events for each day
-          const days = parseInt(programDuration);
-          for (let i = 1; i <= days; i++) {
-            const eventDate = new Date();
-            eventDate.setDate(eventDate.getDate() + i);
-            const [hours, minutes] = reminderTime.split(':');
-            eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-            
-            const endDate = new Date(eventDate);
-            endDate.setMinutes(endDate.getMinutes() + 30); // 30-minute duration
-
-            const event = {
-              summary: `DSCPL Daily ${programType} - ${topic}`,
-              description: `Your daily spiritual ${programType} session focusing on ${topic}. Take 15-30 minutes to connect with God.`,
-              start: {
-                dateTime: eventDate.toISOString(),
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-              },
-              end: {
-                dateTime: endDate.toISOString(),
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-              },
-              reminders: {
-                useDefault: false,
-                overrides: [
-                  { method: 'popup', minutes: 10 },
-                  { method: 'email', minutes: 60 }
-                ]
-              }
-            };
-
-            await window.gapi.client.calendar.events.insert({
-              calendarId: 'primary',
-              resource: event
-            });
-          }
-
-          toast({
-            title: "Calendar Events Created",
-            description: `${days} events added to your Google Calendar`,
-          });
+        toast({
+          title: "Calendar Events Created",
+          description: `${days} events added to your Google Calendar`,
         });
       }
     } catch (error) {
