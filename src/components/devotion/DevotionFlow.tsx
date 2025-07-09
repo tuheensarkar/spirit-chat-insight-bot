@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
-import { ArrowLeft, BookOpen, Heart, Sparkles } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TopicSelection } from './TopicSelection';
 import { DevotionContent } from './DevotionContent';
+import { ReminderSettings } from '../reminders/ReminderSettings';
 
 interface DevotionFlowProps {
   topic: string;
@@ -13,16 +13,28 @@ interface DevotionFlowProps {
 
 export const DevotionFlow: React.FC<DevotionFlowProps> = ({ topic, onBack }) => {
   const [selectedTopic, setSelectedTopic] = useState(topic);
-  const [showContent, setShowContent] = useState(!!topic);
+  const [currentStep, setCurrentStep] = useState<'selection' | 'schedule' | 'content'>(
+    topic ? 'schedule' : 'selection'
+  );
 
   const handleTopicSelect = (newTopic: string) => {
     setSelectedTopic(newTopic);
-    setShowContent(true);
+    setCurrentStep('schedule');
+  };
+
+  const handleScheduleComplete = () => {
+    setCurrentStep('content');
   };
 
   const handleBackToTopics = () => {
-    setShowContent(false);
-    setSelectedTopic('');
+    if (currentStep === 'content') {
+      setCurrentStep('schedule');
+    } else if (currentStep === 'schedule') {
+      setCurrentStep('selection');
+      setSelectedTopic('');
+    } else {
+      onBack();
+    }
   };
 
   return (
@@ -31,7 +43,7 @@ export const DevotionFlow: React.FC<DevotionFlowProps> = ({ topic, onBack }) => 
         <div className="flex items-center mb-8">
           <Button
             variant="ghost"
-            onClick={showContent ? handleBackToTopics : onBack}
+            onClick={handleBackToTopics}
             className="mr-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -43,10 +55,20 @@ export const DevotionFlow: React.FC<DevotionFlowProps> = ({ topic, onBack }) => 
           </div>
         </div>
 
-        {showContent ? (
-          <DevotionContent topic={selectedTopic} />
-        ) : (
+        {currentStep === 'selection' && (
           <TopicSelection onTopicSelect={handleTopicSelect} />
+        )}
+        
+        {currentStep === 'schedule' && (
+          <ReminderSettings 
+            onScheduleComplete={handleScheduleComplete}
+            programType="Devotion"
+            topic={selectedTopic}
+          />
+        )}
+        
+        {currentStep === 'content' && (
+          <DevotionContent topic={selectedTopic} />
         )}
       </div>
     </div>

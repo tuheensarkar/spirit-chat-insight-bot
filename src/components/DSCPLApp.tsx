@@ -9,6 +9,8 @@ import { PrayerFlow } from './prayer/PrayerFlow';
 import { MeditationFlow } from './meditation/MeditationFlow';
 import { AccountabilityFlow } from './accountability/AccountabilityFlow';
 import { SpiritualChatbot } from './SpiritualChatbot';
+import { NotificationManager } from './reminders/NotificationManager';
+import { GoogleCalendarScript } from './reminders/GoogleCalendarScript';
 
 export type DSCPLMode = 'selection' | 'devotion' | 'prayer' | 'meditation' | 'accountability' | 'chat';
 
@@ -45,6 +47,8 @@ export const DSCPLApp = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50">
+      <NotificationManager />
+      <GoogleCalendarScript />
       {renderCurrentMode()}
     </div>
   );

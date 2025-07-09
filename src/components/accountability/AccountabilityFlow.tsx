@@ -4,6 +4,7 @@ import { ArrowLeft, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AccountabilityTopicSelection } from './AccountabilityTopicSelection';
 import { AccountabilityContent } from './AccountabilityContent';
+import { ReminderSettings } from '../reminders/ReminderSettings';
 
 interface AccountabilityFlowProps {
   topic: string;
@@ -12,16 +13,28 @@ interface AccountabilityFlowProps {
 
 export const AccountabilityFlow: React.FC<AccountabilityFlowProps> = ({ topic, onBack }) => {
   const [selectedTopic, setSelectedTopic] = useState(topic);
-  const [showContent, setShowContent] = useState(!!topic);
+  const [currentStep, setCurrentStep] = useState<'selection' | 'schedule' | 'content'>(
+    topic ? 'schedule' : 'selection'
+  );
 
   const handleTopicSelect = (newTopic: string) => {
     setSelectedTopic(newTopic);
-    setShowContent(true);
+    setCurrentStep('schedule');
+  };
+
+  const handleScheduleComplete = () => {
+    setCurrentStep('content');
   };
 
   const handleBackToTopics = () => {
-    setShowContent(false);
-    setSelectedTopic('');
+    if (currentStep === 'content') {
+      setCurrentStep('schedule');
+    } else if (currentStep === 'schedule') {
+      setCurrentStep('selection');
+      setSelectedTopic('');
+    } else {
+      onBack();
+    }
   };
 
   return (
@@ -30,7 +43,7 @@ export const AccountabilityFlow: React.FC<AccountabilityFlowProps> = ({ topic, o
         <div className="flex items-center mb-8">
           <Button
             variant="ghost"
-            onClick={showContent ? handleBackToTopics : onBack}
+            onClick={handleBackToTopics}
             className="mr-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -42,10 +55,20 @@ export const AccountabilityFlow: React.FC<AccountabilityFlowProps> = ({ topic, o
           </div>
         </div>
 
-        {showContent ? (
-          <AccountabilityContent topic={selectedTopic} />
-        ) : (
+        {currentStep === 'selection' && (
           <AccountabilityTopicSelection onTopicSelect={handleTopicSelect} />
+        )}
+        
+        {currentStep === 'schedule' && (
+          <ReminderSettings 
+            onScheduleComplete={handleScheduleComplete}
+            programType="Accountability"
+            topic={selectedTopic}
+          />
+        )}
+        
+        {currentStep === 'content' && (
+          <AccountabilityContent topic={selectedTopic} />
         )}
       </div>
     </div>

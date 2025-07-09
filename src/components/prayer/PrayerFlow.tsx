@@ -4,6 +4,7 @@ import { ArrowLeft, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PrayerTopicSelection } from './PrayerTopicSelection';
 import { PrayerContent } from './PrayerContent';
+import { ReminderSettings } from '../reminders/ReminderSettings';
 
 interface PrayerFlowProps {
   topic: string;
@@ -12,16 +13,28 @@ interface PrayerFlowProps {
 
 export const PrayerFlow: React.FC<PrayerFlowProps> = ({ topic, onBack }) => {
   const [selectedTopic, setSelectedTopic] = useState(topic);
-  const [showContent, setShowContent] = useState(!!topic);
+  const [currentStep, setCurrentStep] = useState<'selection' | 'schedule' | 'content'>(
+    topic ? 'schedule' : 'selection'
+  );
 
   const handleTopicSelect = (newTopic: string) => {
     setSelectedTopic(newTopic);
-    setShowContent(true);
+    setCurrentStep('schedule');
+  };
+
+  const handleScheduleComplete = () => {
+    setCurrentStep('content');
   };
 
   const handleBackToTopics = () => {
-    setShowContent(false);
-    setSelectedTopic('');
+    if (currentStep === 'content') {
+      setCurrentStep('schedule');
+    } else if (currentStep === 'schedule') {
+      setCurrentStep('selection');
+      setSelectedTopic('');
+    } else {
+      onBack();
+    }
   };
 
   return (
@@ -30,7 +43,7 @@ export const PrayerFlow: React.FC<PrayerFlowProps> = ({ topic, onBack }) => {
         <div className="flex items-center mb-8">
           <Button
             variant="ghost"
-            onClick={showContent ? handleBackToTopics : onBack}
+            onClick={handleBackToTopics}
             className="mr-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -42,10 +55,20 @@ export const PrayerFlow: React.FC<PrayerFlowProps> = ({ topic, onBack }) => {
           </div>
         </div>
 
-        {showContent ? (
-          <PrayerContent topic={selectedTopic} />
-        ) : (
+        {currentStep === 'selection' && (
           <PrayerTopicSelection onTopicSelect={handleTopicSelect} />
+        )}
+        
+        {currentStep === 'schedule' && (
+          <ReminderSettings 
+            onScheduleComplete={handleScheduleComplete}
+            programType="Prayer"
+            topic={selectedTopic}
+          />
+        )}
+        
+        {currentStep === 'content' && (
+          <PrayerContent topic={selectedTopic} />
         )}
       </div>
     </div>
