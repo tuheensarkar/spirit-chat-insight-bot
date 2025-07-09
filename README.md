@@ -2,7 +2,7 @@
 
 A Bible-based spiritual assistant powered by AI — delivering deep, meaningful conversations rooted in scripture. Built with Supabase, Groq API, and LangChain, this chatbot offers a complete RAG (Retrieval-Augmented Generation) experience that understands your context, prays with you, and inspires your soul.
 
-🌐 Live Demo: spirit-chat-insight-bot.vercel.app
+🌐 **Live Demo**: spirit-chat-insight-bot.vercel.app
 
 📖 **Features**
 
@@ -25,6 +25,7 @@ A Bible-based spiritual assistant powered by AI — delivering deep, meaningful 
     🖼️ Image Quote Generation (upcoming) — Auto-generate shareable scripture-based quote images
 
 ⚙️ **Tech Stack**
+
   Frontend: Vite.js, React.js, Tailwind.css, Next.js
 
   Backend: Supabase (Auth + DB), Groq API (Mixtral)
@@ -34,6 +35,7 @@ A Bible-based spiritual assistant powered by AI — delivering deep, meaningful 
   Extras: JWT Auth, Push Notifications, PWA, Calendar Integration
 
 🎨 **Design Highlights**
+
 Soft, spiritual-themed color palette with calm gradients
 
 Icons representing the cross, dove, and peace
