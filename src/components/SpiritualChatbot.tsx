@@ -22,7 +22,7 @@ interface SpiritualChatbotProps {
 }
 
 const groq = new Groq({
-  apiKey: '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',
+  apiKey: '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',
   dangerouslyAllowBrowser: true
 });
 
