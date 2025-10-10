@@ -69,7 +69,7 @@ Remember: You are here to support, not to judge. Every person's spiritual journe
             content: userMessage
           }
         ],
-        model: "llama3-8b-8192",
+        model: "llama-3.1-8b-instant",
         temperature: 0.7,
         max_tokens: 500,
       });
